@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Quran.Core;
+using Quran.Core.Model;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace Quran.Views

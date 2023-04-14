@@ -7,9 +7,10 @@ namespace Quran.Core
 {
     public static class MainParser
     {
-        private static Tuple<string, string, int, List<int>, Dictionary<int, Tuple<int, int>>> DetectSeriesIdx(string verse, string charsDetection)
+        private static Tuple<string, string, int, List<int>, Dictionary<int, Tuple<int, int>>, List<int>> DetectSeriesIdx(string verse, string charsDetection)
         {
             List<int> vals = new List<int>();
+            List<int> indecis = new List<int>();
             List<string> verseNumbers = new List<string>();
             List<int> valsSpacesIncluded = new List<int>();
             Dictionary<int, Tuple<int, int>> mapping = new Dictionary<int, Tuple<int, int>>();
@@ -23,14 +24,16 @@ namespace Quran.Core
                 //int endIndex = idx + lengthOfChars;
 
                 string partOfText = verse.Substring(idx, lengthOfChars);
-                bool checkValue = partOfText == charsDetection;
+                bool checkValue = (partOfText == charsDetection);
 
                 if (checkValue)
                 {
+                    
                     Match m = Regex.Match(verse.Substring(idx), @"\d+");
                     if (m.Success)
                     {
                         verseNumbers.Add(m.Value);
+                        indecis.Add(idx+1);
                     }
                 }
             }
@@ -80,7 +83,7 @@ namespace Quran.Core
                 mapping[vals[idx]] = Tuple.Create(val, int.Parse(verseNumber));
             }
 
-            return Tuple.Create(verse, unspacesVerse, vals.Count, vals, mapping);
+            return Tuple.Create(verse, unspacesVerse, vals.Count, vals, mapping, indecis);
         }
 
 

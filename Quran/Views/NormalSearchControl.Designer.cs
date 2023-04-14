@@ -126,7 +126,7 @@
             this.button1.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.button1.Font = new System.Drawing.Font("Showcard Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.button1.ForeColor = System.Drawing.Color.White;
-            this.button1.Location = new System.Drawing.Point(20, 73);
+            this.button1.Location = new System.Drawing.Point(24, 78);
             this.button1.Name = "button1";
             this.button1.Size = new System.Drawing.Size(53, 46);
             this.button1.TabIndex = 1;
@@ -139,7 +139,7 @@
             this.button_addTab.BackColor = System.Drawing.SystemColors.ActiveCaption;
             this.button_addTab.Font = new System.Drawing.Font("Showcard Gothic", 18F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point);
             this.button_addTab.ForeColor = System.Drawing.Color.White;
-            this.button_addTab.Location = new System.Drawing.Point(20, 12);
+            this.button_addTab.Location = new System.Drawing.Point(24, 17);
             this.button_addTab.Name = "button_addTab";
             this.button_addTab.Size = new System.Drawing.Size(53, 46);
             this.button_addTab.TabIndex = 0;

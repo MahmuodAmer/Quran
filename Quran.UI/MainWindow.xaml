@@ -1,0 +1,61 @@
+﻿<Window x:Class="Quran.UI.MainWindow"
+        xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+        xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+        xmlns:local="clr-namespace:Quran.UI"
+        mc:Ignorable="d"
+        Title="Quran" Height="450" Width="800">
+    <Grid>
+        <TabControl>
+            <TabItem Header="Tab Item 0" >
+                <Grid Background="AliceBlue">
+                    <Grid.RowDefinitions>
+                        <RowDefinition Height="2*"/>
+                        <RowDefinition Height="1*"/>
+                        <RowDefinition Height="1*"/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1*"/>
+                    </Grid.ColumnDefinitions>
+
+                    <StackPanel>
+                        <!--Label of the Index List-->
+                        <StackPanel Orientation="Horizontal">
+                            <TextBlock> رقم الحرف</TextBlock>
+                            <Separator Width="15" 
+                                       Margin="10"
+                                       Background="DarkSalmon"/>
+                            <TextBlock>
+                            رقم الاية
+                        </TextBlock>
+                        </StackPanel>
+                        <ListBox x:Name="ListBox_ResultIndexs"
+                                 Height="200"
+                                 ItemsSource="{Binding Path=SearchResult}">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock Grid.Column="0"
+                                                   
+                                                   Text="{Binding VerseId}"/>
+                                        <Separator Background="Aquamarine" Margin="20" Width="30"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CharIndex}"/>
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+                </Grid>
+            </TabItem>
+        </TabControl>
+
+    </Grid>
+</Window>

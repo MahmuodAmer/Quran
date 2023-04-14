@@ -3,7 +3,11 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.4.33205.214
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quran", "Quran\Quran.csproj", "{78BD85D9-F493-41A6-9F63-2B45C69C81EE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quran", "Quran\Quran.csproj", "{78BD85D9-F493-41A6-9F63-2B45C69C81EE}"
+EndProject
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Quran.Tests", "Quran.Tests\Quran.Tests.csproj", "{67193C38-3B40-4F8D-AF5C-EACFA7F539C2}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Quran.UI", "Quran.UI\Quran.UI.csproj", "{3E7F507F-E36A-4E65-A593-8E4F43F2F702}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -15,6 +19,14 @@ Global
 		{78BD85D9-F493-41A6-9F63-2B45C69C81EE}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{78BD85D9-F493-41A6-9F63-2B45C69C81EE}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{78BD85D9-F493-41A6-9F63-2B45C69C81EE}.Release|Any CPU.Build.0 = Release|Any CPU
+		{67193C38-3B40-4F8D-AF5C-EACFA7F539C2}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{67193C38-3B40-4F8D-AF5C-EACFA7F539C2}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{67193C38-3B40-4F8D-AF5C-EACFA7F539C2}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{67193C38-3B40-4F8D-AF5C-EACFA7F539C2}.Release|Any CPU.Build.0 = Release|Any CPU
+		{3E7F507F-E36A-4E65-A593-8E4F43F2F702}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{3E7F507F-E36A-4E65-A593-8E4F43F2F702}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{3E7F507F-E36A-4E65-A593-8E4F43F2F702}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{3E7F507F-E36A-4E65-A593-8E4F43F2F702}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
