@@ -1,13 +1,12 @@
-﻿
-using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Quran.Core.Model;
 using System.Text.RegularExpressions;
 
 namespace Quran.Core
 {
-    public static class MainParser
+    public static class Parser
     {
-        private static Tuple<string, string, int, List<int>, Dictionary<int, Tuple<int, int>>, List<int>> DetectSeriesIdx(string verse, string charsDetection)
+        private static SeriesIdxResults DetectSeriesIdx(string verse, string charsDetection)
         {
             List<int> vals = new List<int>();
             List<int> indecis = new List<int>();
@@ -17,77 +16,32 @@ namespace Quran.Core
 
             verse = verse.Replace("|", "");
 
+            int pureIndex = 1;
             // get the list of index of ayat
             for (int idx = 0; idx < verse.Length - charsDetection.Length; idx++)
             {
                 int lengthOfChars = charsDetection.Length;
-                //int endIndex = idx + lengthOfChars;
 
                 string partOfText = verse.Substring(idx, lengthOfChars);
                 bool checkValue = (partOfText == charsDetection);
+                if (verse[idx] != '\n' | verse[idx] != ' ')
+                    pureIndex++;
 
                 if (checkValue)
                 {
-                    
                     Match m = Regex.Match(verse.Substring(idx), @"\d+");
                     if (m.Success)
                     {
                         verseNumbers.Add(m.Value);
-                        indecis.Add(idx+1);
+                        indecis.Add(pureIndex);
                     }
                 }
             }
 
-            // get the ayat without the index (d)
-            verse = new string(verse.Where(c => !char.IsDigit(c)).ToArray());
-            verse = verse.Replace(")", "");
-            verse = verse.Replace("(", "");
-            verse = verse.Replace("|", "");
-
-            // get the index of the char with space included
-            for (int idx = 0; idx < verse.Length - charsDetection.Length; idx++)
-            {
-                int lengthOfChars = charsDetection.Length;
-                int endIndex = idx + lengthOfChars;
-
-                string partOfText = verse.Substring(idx, lengthOfChars);
-                bool checkValue = partOfText == charsDetection;
-
-                if (checkValue)
-                {
-                    valsSpacesIncluded.Add(idx);
-                }
-            }
-
-            string unspacesVerse = verse;//.Replace(" ", "");
-
-            // get the index of the char with space excluded
-            for (int idx = 0; idx < unspacesVerse.Length - charsDetection.Length; idx++)
-            {
-                int lengthOfChars = charsDetection.Length;
-                int endIndex = idx + lengthOfChars;
-
-                string partOfText = unspacesVerse.Substring(idx, lengthOfChars).Replace("\n", "");
-                bool checkValue = partOfText == charsDetection;
-
-                if (checkValue)
-                {
-                    vals.Add(idx);
-                }
-            }
-
-            for (int idx = 0; idx < vals.Count; idx++)
-            {
-                int val = valsSpacesIncluded[idx];
-                string verseNumber = verseNumbers[idx];
-                mapping[vals[idx]] = Tuple.Create(val, int.Parse(verseNumber));
-            }
-
-            return Tuple.Create(verse, unspacesVerse, vals.Count, vals, mapping, indecis);
+            return new SeriesIdxResults { Indecis = indecis };
         }
 
-
-        private static Tuple<int, List<int>> GetDifference(List<int> series)
+        private static List<int> GetDifference(List<int> series)
         {
             List<int> diffList = new List<int>();
             for (int idx = 1; idx < series.Count; idx++)
@@ -95,30 +49,43 @@ namespace Quran.Core
                 int difference = series[idx] - series[idx - 1];
                 diffList.Add(difference);
             }
-            return Tuple.Create(diffList.Count, diffList);
+            return diffList;
         }
 
 
-        //private static List<List<int>> GroupConsecutive(List<int> inputList)
-        //{
-        //    List<List<int>> result = new List<List<int>>();
-        //    List<int> currentGroup = new List<int>();
-        //    for (int i = 0; i < inputList.Count; i++)
-        //    {
-        //        int currentItem = inputList[i];
-        //        if (currentGroup.Count == 0 || Equals(currentGroup.Last(), currentItem))
-        //        {
-        //            currentGroup.Add(currentItem);
-        //        }
-        //        else
-        //        {
-        //            result.Add(currentGroup);
-        //            currentGroup = new List<int> { currentItem };
-        //        }
-        //    }
-        //    result.Add(currentGroup);
-        //    return result;
-        //}
+        private static List<List<int>> GetSequances(List<int> inputList)
+        {
+            Dictionary<string, int> shows = new Dictionary<string, int>();
+
+            //Loop in the numbers (Lengths) from the half of the length of list to 1
+            //for every number in loop through the mainList check if it in the result list if it found add 1 to the value of it 
+            // else add it to the Dictionary with the value 0 
+
+            for (int i = (int)inputList.Count / 2; i >= 1; i--)
+            {
+                //check if in range
+                //var check = (endIndex + length)! > inputList.Count;
+
+                //get the sub list from the inputs array
+                var chanks = inputList.Chunk(i).Where(x => x.Length == i);
+
+                foreach (var chunk in chanks)
+                {
+                    var stringRepresintationOfTheList=JsonConvert.SerializeObject(chunk);
+                    if(shows.ContainsKey(stringRepresintationOfTheList))
+                    {
+                        shows[stringRepresintationOfTheList] += 1;
+                    }
+                    else
+                    {
+                        shows[stringRepresintationOfTheList] =0 ;
+                    }
+                }
+            }
+
+            return shows.Keys.Select(x=>JsonConvert.DeserializeObject<List<int>>(x)).ToList();
+        }
+
 
 
         /// <summary>
@@ -177,7 +144,7 @@ namespace Quran.Core
 
                 if (substring.Count > 0)
                 {
-                    matches =matches.Concat(substring);
+                    matches = matches.Concat(substring);
                     similarity1.Add(repeatedCharIdx[charX]);
                     similarity2.Add(repeatedCharIdx[charY]);
                     series.Add(new List<List<int>> { similarity1, similarity2 });
@@ -233,7 +200,8 @@ namespace Quran.Core
                     {
                         output += verse.SimplifyVerse();
                         counter++;
-                    }else if(counter >0 && counter < pattern.Count)
+                    }
+                    else if (counter > 0 && counter < pattern.Count)
                     {
                         continue;
 
@@ -252,49 +220,49 @@ namespace Quran.Core
 
 
 
-        
-        public static ParseResult Parse(string text, string chars)
-        {
-            ParseResult result = new ParseResult();
 
-            var ids_result = DetectSeriesIdx(text, chars);
+        //public static ParseResult Parse(string text, string chars)
+        //{
+        //    ParseResult result = new ParseResult();
 
-            result.NumberOfAppearing = ids_result.Item3;
-            result.RepeatedIndexs = ids_result.Item4;
-            //Call the get diffrence method
-            var diffrence_results = GetDifference(result.RepeatedIndexs);
+        //    var ids_result = DetectSeriesIdx(text, chars);
 
-            result.DiffrencesList = diffrence_results.Item2;
+        //    result.NumberOfAppearing = ids_result.Item3;
+        //    result.RepeatedIndexs = ids_result.Item4;
+        //    //Call the get diffrence method
+        //    var diffrence_results = GetDifference(result.RepeatedIndexs);
 
-            var matches_series = GetMatchesAndSeries(result.DiffrencesList, ids_result.Item4, ids_result.Item5, ids_result.Item2);
+        //    result.DiffrencesList = diffrence_results.Item2;
 
-            result.Matches = matches_series.Item1;
-            result.Series = matches_series.Item2;
-            result.OutputString = matches_series.Item3;
-            return result;
-        }
+        //    var matches_series = GetMatchesAndSeries(result.DiffrencesList, ids_result.Item4, ids_result.Item5, ids_result.Item2);
 
-        public static ParseResult Parse(int id, string chars)
-        {
-            ParseResult result = new ParseResult();
-            result.SuraId= id;
-            result.SearchText= chars;
-            var ids_result = DetectSeriesIdx(id.SuraIdToString(), chars);
+        //    result.Matches = matches_series.Item1;
+        //    result.Series = matches_series.Item2;
+        //    result.OutputString = matches_series.Item3;
+        //    return result;
+        //}
 
-            result.NumberOfAppearing = ids_result.Item3;
-            result.RepeatedIndexs = ids_result.Item4;
-            //Call the get diffrence method
-            var diffrence_results = GetDifference(result.RepeatedIndexs);
+        //public static ParseResult Parse(int id, string chars)
+        //{
+        //    ParseResult result = new ParseResult();
+        //    result.SuraId= id;
+        //    result.SearchText= chars;
+        //    var ids_result = DetectSeriesIdx(id.SuraIdToString(), chars);
 
-            result.DiffrencesList = diffrence_results.Item2;
+        //    result.NumberOfAppearing = ids_result.Item3;
+        //    result.RepeatedIndexs = ids_result.Item4;
+        //    //Call the get diffrence method
+        //    var diffrence_results = GetDifference(result.RepeatedIndexs);
 
-            var matches_series = GetMatchesAndSeries(result.DiffrencesList, ids_result.Item4, ids_result.Item5, ids_result.Item2);
+        //    result.DiffrencesList = diffrence_results.Item2;
 
-            result.Matches = matches_series.Item1;
-            result.Series = matches_series.Item2;
-            result.OutputString = matches_series.Item3;
-            return result;
-        }
+        //    var matches_series = GetMatchesAndSeries(result.DiffrencesList, ids_result.Item4, ids_result.Item5, ids_result.Item2);
+
+        //    result.Matches = matches_series.Item1;
+        //    result.Series = matches_series.Item2;
+        //    result.OutputString = matches_series.Item3;
+        //    return result;
+        //}
 
     }
 }

@@ -13,6 +13,5 @@
             var s = manager.Suras;
             return s[id - 1].ToString();
         }
-
     }
 }

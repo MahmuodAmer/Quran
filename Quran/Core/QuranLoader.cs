@@ -58,15 +58,8 @@ namespace Quran.Core
                     else
                         break;
                 }
-
-
                 Suras.Add(sura);
             }
-
-
-
         }
-
-
     }
 }

@@ -26,7 +26,7 @@ namespace Quran.Views
 
 
             int id = ((int)((LightItem)comboBox_names.SelectedItem).Id);
-            var result = MainParser.Parse(id.SuraIdToString(), textBox_search.Text);
+            var result = Parser.Parse(id.SuraIdToString(), textBox_search.Text);
 
             var values_splited = result.OutputString.Split(textBox_search.Text);
             int length = values_splited.Length;

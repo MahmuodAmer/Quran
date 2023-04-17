@@ -1,9 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Globalization;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Globalization;
 
 namespace Quran.Core
 {
@@ -31,7 +26,8 @@ namespace Quran.Core
 
         public static string SimplifyVerse(this string text)
         {
-            if(text.Length== 0) return text;
+            if(text.Length== 0) 
+                return text;
             if (text.Split("\n").Length > 3)
             {
                 return text.Split("\n")[0] + "\n.\n.\n" + text.Split("\n")[text.Split("\n").Length - 1]+"\n";
