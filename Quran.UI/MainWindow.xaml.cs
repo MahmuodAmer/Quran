@@ -1,6 +1,9 @@
-﻿using Quran.UI.ViewModels;
+﻿using Quran.Core.Model;
+using Quran.UI.Data;
+using Quran.UI.ViewModels;
 using System;
 using System.Collections.Generic;
+using System.ComponentModel;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -21,12 +24,34 @@ namespace Quran.UI
     /// </summary>
     public partial class MainWindow : Window
     {
+        MainViewModel viewModel;
         public MainWindow()
         {
             InitializeComponent();
-            MainViewModel viewModel = new MainViewModel();
+            viewModel = new MainViewModel(new MainDataModel());
             this.DataContext = viewModel;
             viewModel.Load();
+        }
+
+        private void Button_Click(object sender, RoutedEventArgs e)
+        {
+            viewModel.Load();
+        }
+
+        private void ListBox_ResultIndexs_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            if (ListBox_ResultIndexs.SelectedItem == null)
+                return;
+            viewModel.SelectedResult = (Result)ListBox_ResultIndexs.SelectedItem;
+            ListBoxVersesText.SelectedItem = ListBox_ResultIndexs.SelectedItem;
+            ListBoxVersesText.ScrollIntoView(ListBox_ResultIndexs.SelectedItem);
+        }
+
+        private void ListBoxVersesText_SelectionChanged(object sender, SelectionChangedEventArgs e)
+        {
+            ListBox_ResultIndexs.SelectedItem = ListBoxVersesText.SelectedItem;
+            ListBox_ResultIndexs.ScrollIntoView(ListBoxVersesText.SelectedItem);
+
         }
     }
 }

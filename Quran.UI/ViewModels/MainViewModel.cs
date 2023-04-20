@@ -1,25 +1,64 @@
-﻿using Quran.UI.Core.Models;
-using System;
-using System.Collections.Generic;
+﻿using PropertyChanged;
+using Quran.Core.Extention;
+using Quran.Core.Model;
+using Quran.UI.Data;
 using System.Collections.ObjectModel;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using System.ComponentModel;
+using System.Windows.Input;
 
 namespace Quran.UI.ViewModels
 {
-    public class MainViewModel
+    
+    public class MainViewModel:INotifyPropertyChanged
     {
-        public MainViewModel(IMainModel mainModel)
+        private IMainDataModel _mainModel { get; set; }
+
+        public MainViewModel(IMainDataModel mainModel)
         {
-            MainModel = mainModel;
-        }
-        public void Load()
-        {
-            SearchResult = new ObservableCollection<VerseIndex>(MainModel.Load());
+            _mainModel = mainModel;
+            Load();
         }
 
-        public ObservableCollection<VerseIndex> SearchResult { get; set; }
-        public IMainModel MainModel { get; set; }
+        public event PropertyChangedEventHandler? PropertyChanged;
+
+        public void Load()
+        {
+            //Load the quran suras names
+            Suras= new ObservableCollection<LightItem>(ImportDataExtentions.GetNames());
+
+            //set the selectedSura
+            SelectedSura = Suras[0];
+            //*********************************************//****************************************************//
+            Results = _mainModel.Load(SelectedSura.Id, SearchText);
+        }
+        /// <summary>
+        /// Results 
+        /// </summary>
+        public SeriesIdxResults Results { get; set; }
+
+        /// <summary>
+        /// The names of quran suras to show in the combobox
+        /// </summary>
+        public ObservableCollection<LightItem> Suras { get; set; }
+
+        /// <summary>
+        /// Selected sura to work with 
+        /// </summary>
+        public LightItem SelectedSura { get; set; }
+
+        /// <summary>
+        /// Search Text that will be linked to the TextBox
+        /// </summary>
+        public string SearchText { get; set; } = "";
+
+        /// <summary>
+        /// make the search command 
+        /// </summary>
+
+        public ICommand ExecuteSearch { get; set; }
+        /// <summary>
+        /// The selected Result
+        /// </summary>
+        public Result SelectedResult { get; set; }
     }
 }

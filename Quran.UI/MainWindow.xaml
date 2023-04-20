@@ -5,10 +5,10 @@
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quran.UI"
         mc:Ignorable="d"
-        Title="Quran" Height="450" Width="800">
+        Title="Quran" >
     <Grid>
         <TabControl>
-            <TabItem Header="Tab Item 0" >
+            <TabItem Header="Tab Item 0" Width="500">
                 <Grid Background="AliceBlue">
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"/>
@@ -16,25 +16,39 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="0.5*"/>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
-
-                    <StackPanel>
+                    <!--رقم الاية ورقم الحرف-->
+                    <!--Column0 row 0-->
+                    <StackPanel
+                        Grid.RowSpan="2">
                         <!--Label of the Index List-->
-                        <StackPanel Orientation="Horizontal">
-                            <TextBlock> رقم الحرف</TextBlock>
-                            <Separator Width="15" 
-                                       Margin="10"
-                                       Background="DarkSalmon"/>
-                            <TextBlock>
+                        <StackPanel Margin="5 10"  
+                                    Orientation="Horizontal">
+                            <TextBlock 
+                                FontSize="14" 
+                                FontFamily="Cooper Black">
                             رقم الاية
-                        </TextBlock>
+                            </TextBlock>
+                            <Separator Width="5" 
+                                       Margin="5"
+                                       Background="DarkSalmon"/>
+                            <TextBlock FontSize="14"
+                                       FontFamily="Cooper Black"> 
+                                رقم الحرف</TextBlock>
                         </StackPanel>
                         <ListBox x:Name="ListBox_ResultIndexs"
-                                 Height="200"
-                                 ItemsSource="{Binding Path=SearchResult}">
+                                 Height="100" 
+                                 Margin="5 0"
+                                 ItemsSource="{Binding Path=Results.SearchResults}" 
+                                 FontSize="18"
+                                 FontFamily="Cooper Black" 
+                                 SelectionChanged="ListBox_ResultIndexs_SelectionChanged" 
+                                 MaxWidth="1000" 
+                                 MaxHeight="1000">
                             <ListBox.ItemTemplate>
                                 <DataTemplate>
                                     <Grid>
@@ -42,16 +56,117 @@
                                             <ColumnDefinition/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="0"
-                                                   
-                                                   Text="{Binding VerseId}"/>
-                                        <Separator Background="Aquamarine" Margin="20" Width="30"/>
+                                        <TextBlock 
+                                            Grid.Column="0"
+                                            Text="{Binding VerseIndex}"
+                                            />
+                                        <Separator Background="Aquamarine" Margin="20"/>
+                                        <TextBlock Grid.Column="1"
+                                                   Text="{Binding CharIndex}"
+                                                   />
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.Column="1"
+                        Grid.RowSpan="2">
+                        <!--Label of the Index List-->
+                        <StackPanel Margin="5 10">
+                            <TextBlock 
+                                FontSize="14" 
+                                TextAlignment="Center"
+                                Text="مصفوفة الفروقات"
+                                ToolTip="هي مصفوفة كل عنصر فيها هو الفرق بين مكانين متتالين لظهور نتيجة البحث "
+                                FontFamily="Cooper Black"/>
+
+                        </StackPanel>
+                        <ListBox 
+                                 Height="100" 
+                                 Margin="5 0"
+                                 ItemsSource="{Binding Path=Results.SearchResults}" 
+                                 FontSize="18"
+                                 FontFamily="Cooper Black" 
+                                 SelectionChanged="ListBox_ResultIndexs_SelectionChanged" 
+                                 MaxWidth="1000" 
+                                 MaxHeight="1000">
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <TextBlock 
+                                            Grid.Column="0"
+                                            Text="{Binding VerseIndex}"/>
+                                        <Separator Background="Aquamarine" Margin="20"/>
                                         <TextBlock Grid.Column="1"
                                                    Text="{Binding CharIndex}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
+                    </StackPanel>
+
+                    <StackPanel Grid.RowSpan="2" Grid.Column="2">
+                        <TextBlock FontSize="14"
+                                   FontFamily="Cooper Black"
+                                   Margin="5 10"
+                                   TextAlignment="Center"
+                                                >الأيات</TextBlock>
+
+
+                        <ListBox x:Name="ListBoxVersesText"
+                                 Margin="5 0"
+                                 Height="100" 
+                                 ItemsSource="{Binding Path=Results.SearchResults}" 
+                                 MaxWidth="1000"
+                                 MaxHeight="1000"
+                                 FontSize="18" 
+                                 FontFamily="Cooper Black" 
+                                 SelectionChanged="ListBoxVersesText_SelectionChanged" 
+                                 >
+                            <ListBox.ItemTemplate>
+                                <DataTemplate>
+                                    <Grid>
+                                        <Grid.ColumnDefinitions>
+                                            <ColumnDefinition/>
+                                            <ColumnDefinition/>
+                                        </Grid.ColumnDefinitions>
+                                        <RichTextBox 
+                                            
+                                            Margin="0 5"
+                                            Width="105"
+                                            Grid.Column="0"
+                                            
+                                            />
+
+                                    </Grid>
+                                </DataTemplate>
+                            </ListBox.ItemTemplate>
+                        </ListBox>
+
+                    </StackPanel>
+                    <StackPanel Grid.Row="0" Grid.Column="3">
+                        <TextBlock  FontSize="17" TextAlignment="Center">اختر السورة</TextBlock>
+                        <ComboBox Name="ComboBox_Suras"
+                                  ItemsSource="{Binding Path=Suras}"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
+                                  SelectedValue="{Binding Path=SelectedSura.Id,Mode=TwoWay}"
+                                  Margin="10 5"/>
+
+                        <TextBlock Margin="10 15 10 2" TextAlignment="Center" FontSize="18" FontFamily="Cooper Black">نص البحث</TextBlock>
+
+                        <TextBox Name="txt_search" 
+                                 Text="{Binding Path=SearchText,Mode=TwoWay}" 
+                                 Margin="10 5" TextBlock.FontSize="18" TextBlock.FontFamily="Cooper Black" />
+
+                        <Button Margin="10 10"
+                                Content="بدء البحث" 
+                                Click="Button_Click" TextBlock.FontSize="18" TextBlock.FontFamily="Cooper Black"/>
                     </StackPanel>
                 </Grid>
             </TabItem>

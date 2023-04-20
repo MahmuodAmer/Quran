@@ -1,8 +1,8 @@
 ﻿using Quran.Core.Model;
 
-namespace Quran.Core
+namespace Quran.Core.Extention
 {
-    public static class ImportGeneralDataExtentions
+    public static class ImportDataExtentions
     {
         private static List<LightItem> SurasNames;
         /// <summary>

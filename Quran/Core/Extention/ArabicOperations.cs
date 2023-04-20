@@ -1,6 +1,6 @@
 ﻿using System.Globalization;
 
-namespace Quran.Core
+namespace Quran.Core.Extention
 {
     public static class ArabicOperations
     {
@@ -11,26 +11,26 @@ namespace Quran.Core
                 .Select(x => ((char)x).ToString())
                 .ToArray();
 
-            public static string StripDiacritics(this string text)
-            {
-                if (string.IsNullOrEmpty(text))
-                    return text;
-
-                foreach (var charValue in DIACRITICS)
-                    text = text.Replace(charValue, "");
-
+        public static string StripDiacritics(this string text)
+        {
+            if (string.IsNullOrEmpty(text))
                 return text;
-            }
+
+            foreach (var charValue in DIACRITICS)
+                text = text.Replace(charValue, "");
+
+            return text;
+        }
 
 
 
         public static string SimplifyVerse(this string text)
         {
-            if(text.Length== 0) 
+            if (text.Length == 0)
                 return text;
             if (text.Split("\n").Length > 3)
             {
-                return text.Split("\n")[0] + "\n.\n.\n" + text.Split("\n")[text.Split("\n").Length - 1]+"\n";
+                return text.Split("\n")[0] + "\n.\n.\n" + text.Split("\n")[text.Split("\n").Length - 1] + "\n";
             }
             else
                 return text;

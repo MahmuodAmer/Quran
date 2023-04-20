@@ -1,5 +1,6 @@
 ﻿using Newtonsoft.Json;
 using Quran.Core;
+using Quran.Core.Extention;
 using Quran.Core.Model;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
@@ -15,45 +16,45 @@ namespace Quran.Views
 
         private void button_search_Click(object sender, EventArgs e)
         {
-            //Change the Tab Name 
-            ((TabPage)this.Parent).Text = comboBox_names.Text;
+            ////Change the Tab Name 
+            //((TabPage)this.Parent).Text = comboBox_names.Text;
 
 
 
-            //Clear the RichTextBox
-            rtb_result.Text = string.Empty;
+            ////Clear the RichTextBox
+            //rtb_result.Text = string.Empty;
 
 
 
-            int id = ((int)((LightItem)comboBox_names.SelectedItem).Id);
-            var result = Parser.Parse(id.SuraIdToString(), textBox_search.Text);
+            //int id = ((int)((LightItem)comboBox_names.SelectedItem).Id);
+            //var result = Parser.DetectIndices(id.SuraIdToString(), textBox_search.Text, id);
 
-            var values_splited = result.OutputString.Split(textBox_search.Text);
-            int length = values_splited.Length;
-            int counter = 0;
+            //var values_splited = result.OutputString.Split(textBox_search.Text);
+            //int length = values_splited.Length;
+            //int counter = 0;
 
             //Color the searched text
-            foreach (var item in values_splited)
-            {
-                counter++;
-                if (counter == length)
-                {
-                    rtb_result.AppendText(item);
-                    break;
-                }
-                rtb_result.AppendText(item);
+            //foreach (var item in values_splited)
+            //{
+            //    counter++;
+            //    if (counter == length)
+            //    {
+            //        rtb_result.AppendText(item);
+            //        break;
+            //    }
+            //    rtb_result.AppendText(item);
 
-                rtb_result.AppendText(textBox_search.Text, Color.SkyBlue);
+            //    rtb_result.AppendText(textBox_search.Text, Color.SkyBlue);
 
-            }
+            //}
 
-            richTextBox_series.Text = JsonConvert.SerializeObject(result.Series);
-            richTextBox_matches.Text = JsonConvert.SerializeObject(result.Matches);
+            //richTextBox_series.Text = JsonConvert.SerializeObject(result.Series);
+            //richTextBox_matches.Text = JsonConvert.SerializeObject(result.Matches);
         }
 
         private void NormalSearchControl_Load(object sender, EventArgs e)
         {
-            comboBox_names.DataSource = ImportGeneralDataExtentions.GetNames();
+            comboBox_names.DataSource = ImportDataExtentions.GetNames();
             comboBox_names.DisplayMember = "Name";
             comboBox_names.ValueMember = "Id";
         }

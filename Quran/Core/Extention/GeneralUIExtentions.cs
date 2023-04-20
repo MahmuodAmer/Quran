@@ -1,4 +1,4 @@
-﻿namespace Quran.Core
+﻿namespace Quran.Core.Extention
 {
     public static class GeneralUIExtentions
     {
