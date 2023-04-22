@@ -24,5 +24,9 @@ namespace Quran.Core.Model
         /// The Text of the verse
         /// </summary>
         public string VerseText { get; set; }
+        /// <summary>
+        /// The Next Result to the current result
+        /// </summary>
+        public Result Next { get; set; }
     }
 }

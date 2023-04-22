@@ -1,7 +1,9 @@
-﻿using PropertyChanged;
+﻿using Newtonsoft.Json.Linq;
+using PropertyChanged;
 using Quran.Core.Extention;
 using Quran.Core.Model;
 using Quran.UI.Data;
+using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.ComponentModel;
 using System.Windows.Input;
@@ -11,11 +13,11 @@ namespace Quran.UI.ViewModels
     
     public class MainViewModel:INotifyPropertyChanged
     {
-        private IMainDataModel _mainModel { get; set; }
+        private IMainDataModel _dataModel { get; set; }
 
-        public MainViewModel(IMainDataModel mainModel)
+        public MainViewModel(IMainDataModel dataModel)
         {
-            _mainModel = mainModel;
+            _dataModel = dataModel;
             Load();
         }
 
@@ -29,12 +31,14 @@ namespace Quran.UI.ViewModels
             //set the selectedSura
             SelectedSura = Suras[0];
             //*********************************************//****************************************************//
-            Results = _mainModel.Load(SelectedSura.Id, SearchText);
+            Results = _dataModel.Load(SelectedSura.Id, SearchText);
         }
+
         /// <summary>
         /// Results 
         /// </summary>
         public SeriesIdxResults Results { get; set; }
+        
 
         /// <summary>
         /// The names of quran suras to show in the combobox
@@ -51,11 +55,7 @@ namespace Quran.UI.ViewModels
         /// </summary>
         public string SearchText { get; set; } = "";
 
-        /// <summary>
-        /// make the search command 
-        /// </summary>
-
-        public ICommand ExecuteSearch { get; set; }
+        
         /// <summary>
         /// The selected Result
         /// </summary>

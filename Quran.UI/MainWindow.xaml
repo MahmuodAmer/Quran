@@ -16,32 +16,33 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="0.5*"/>
-                        <ColumnDefinition Width="2*"/>
+                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width="1*"/>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition Width="0.5*"/>
                     </Grid.ColumnDefinitions>
                     <!--رقم الاية ورقم الحرف-->
                     <!--Column0 row 0-->
                     <StackPanel
-                        Grid.RowSpan="2">
+                        Grid.RowSpan="3">
                         <!--Label of the Index List-->
                         <StackPanel Margin="5 10"  
                                     Orientation="Horizontal">
                             <TextBlock 
-                                FontSize="14" 
                                 FontFamily="Cooper Black">
-                            رقم الاية
+                            الاية
                             </TextBlock>
                             <Separator Width="5" 
                                        Margin="5"
                                        Background="DarkSalmon"/>
-                            <TextBlock FontSize="14"
+                            <TextBlock
                                        FontFamily="Cooper Black"> 
-                                رقم الحرف</TextBlock>
+                                ترتيب الحرف</TextBlock>
                         </StackPanel>
                         <ListBox x:Name="ListBox_ResultIndexs"
-                                 Height="100" 
+                                 Height="500" 
+
+                                 Grid.RowSpan="3"
                                  Margin="5 0"
                                  ItemsSource="{Binding Path=Results.SearchResults}" 
                                  FontSize="18"
@@ -71,24 +72,29 @@
                     </StackPanel>
 
                     <StackPanel Grid.Column="1"
-                        Grid.RowSpan="2">
+                        Grid.RowSpan="3">
                         <!--Label of the Index List-->
                         <StackPanel Margin="5 10">
                             <TextBlock 
                                 FontSize="14" 
                                 TextAlignment="Center"
-                                Text="مصفوفة الفروقات"
+                                Text="الفروقات"
                                 ToolTip="هي مصفوفة كل عنصر فيها هو الفرق بين مكانين متتالين لظهور نتيجة البحث "
                                 FontFamily="Cooper Black"/>
 
                         </StackPanel>
-                        <ListBox 
-                                 Height="100" 
+                        <ListBox x:Name="ListBoxDiffrences"
+                                                                  Height="500" 
+
+                                 Grid.RowSpan="3"
+
+                                 
                                  Margin="5 0"
-                                 ItemsSource="{Binding Path=Results.SearchResults}" 
+                                 ItemsSource="{Binding Path=Results.DiffrenceList}" 
                                  FontSize="18"
                                  FontFamily="Cooper Black" 
-                                 SelectionChanged="ListBox_ResultIndexs_SelectionChanged" 
+                                SelectionChanged="ListBoxDiffrences_SelectionChanged" 
+
                                  MaxWidth="1000" 
                                  MaxHeight="1000">
                             <ListBox.ItemTemplate>
@@ -98,29 +104,29 @@
                                             <ColumnDefinition/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
-                                        <TextBlock 
-                                            Grid.Column="0"
-                                            Text="{Binding VerseIndex}"/>
-                                        <Separator Background="Aquamarine" Margin="20"/>
                                         <TextBlock Grid.Column="1"
-                                                   Text="{Binding CharIndex}"/>
+                                                   Text="{Binding}"/>
                                     </Grid>
                                 </DataTemplate>
                             </ListBox.ItemTemplate>
                         </ListBox>
                     </StackPanel>
 
-                    <StackPanel Grid.RowSpan="2" Grid.Column="2">
+                    <StackPanel Grid.RowSpan="3" Grid.Column="2">
                         <TextBlock FontSize="14"
                                    FontFamily="Cooper Black"
                                    Margin="5 10"
+                                   ToolTip="عرض النتائج عندما تختار اي عنصر من المصفوفات السابقة"
                                    TextAlignment="Center"
                                                 >الأيات</TextBlock>
 
 
                         <ListBox x:Name="ListBoxVersesText"
                                  Margin="5 0"
-                                 Height="100" 
+                                 
+
+                                 SelectionMode="Multiple"
+                                 Height="500" 
                                  ItemsSource="{Binding Path=Results.SearchResults}" 
                                  MaxWidth="1000"
                                  MaxHeight="1000"
@@ -135,12 +141,9 @@
                                             <ColumnDefinition/>
                                             <ColumnDefinition/>
                                         </Grid.ColumnDefinitions>
-                                        <RichTextBox 
-                                            
+                                        <TextBlock
+                                            Text="{Binding VerseText}"
                                             Margin="0 5"
-                                            Width="105"
-                                            Grid.Column="0"
-                                            
                                             />
 
                                     </Grid>
