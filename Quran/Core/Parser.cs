@@ -54,24 +54,26 @@ namespace Quran.Core
                 DiffrenceList = new ObservableCollection<int>(diffList),
                 SearchChars = charsDetection,
                 SuraId = suraId,
-                SearchResults = new ObservableCollection<Result>(searchResults)
+                SearchResults = new ObservableCollection<Result>(searchResults),
+                Sequances = GetSequances(diffList)
             };
+
 
             return output;
         }
 
         private static string GetVarseThatIndexWillBeIn(string verse, int idx)
         {
-            
+
             int startIndex = idx;
 
             string leftText = verse.Substring(0, idx).Split('\n').Last();
-            string rightText = verse.Substring( idx).Split('\n')[0];
+            string rightText = verse.Substring(idx).Split('\n')[0];
 
-            return leftText+ rightText;
+            return leftText + rightText;
         }
 
-        private static List<List<int>> GetSequances(List<int> inputList)
+        private static Dictionary<string, int> GetSequances(List<int> inputList)
         {
             Dictionary<string, int> shows = new Dictionary<string, int>();
 
@@ -108,8 +110,38 @@ namespace Quran.Core
                     shows.Remove(list.Key);
                 }
             }
-            return shows.Keys.Select(x => JsonConvert.DeserializeObject<List<int>>(x)).ToList();
+            //return shows.Keys.Select(x => JsonConvert.DeserializeObject<List<int>>(x)).ToList();
+            return shows;
         }
 
+        public static List<SeriesIdxResults> SearchForSimilar(string verse, string searchText, int id)
+        {
+            var searchList=DetectSubStrings(verse);
+            throw new NotImplementedException();
+        }
+        /// <summary>
+        /// Detect all posible characheters to search for using
+        /// </summary>
+        /// <param name="verse"></param>
+        /// <returns></returns>
+        private static List<string> DetectSubStrings(string verse)
+        {
+            HashSet<string> result = new HashSet<string>();
+            for (int i = 1; i < 20; i++)
+            {
+                for (int index = 0; index < verse.Length; index += i)
+                {
+                    //If there is no space in the substring
+                    if (verse.Substring(index, i).IndexOf(" ") == -1)
+                    {
+                        result.Add(verse.Substring(index, i));
+                    }
+                }
+            }
+
+            return result.ToList();
+        }
+
+        
     }
 }

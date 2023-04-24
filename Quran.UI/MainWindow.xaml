@@ -4,42 +4,53 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quran.UI"
+        xmlns:converter="clr-namespace:Quran.UI.Converters"
         mc:Ignorable="d"
-        Title="Quran" >
+        Foreground="White"
+        Title="Quran"
+        >
+    <Window.Resources>
+        <converter:SerializerConverter x:Key="SerializerConverter"></converter:SerializerConverter>
+        <converter:HighlightConverter x:Key="HighlightConverter"></converter:HighlightConverter>
+    </Window.Resources>
     <Grid>
         <TabControl>
             <TabItem Header="Tab Item 0" Width="500">
-                <Grid Background="AliceBlue">
+                <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"/>
                         <RowDefinition Height="1*"/>
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width="1*"/>
-                        <ColumnDefinition Width="1*"/>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width="1.5*"/>
                         <ColumnDefinition Width="2*"/>
-                        <ColumnDefinition Width="0.5*"/>
+                        <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
                     <!--رقم الاية ورقم الحرف-->
                     <!--Column0 row 0-->
-                    <StackPanel
-                        Grid.RowSpan="3">
-                        <!--Label of the Index List-->
-                        <StackPanel Margin="5 10"  
+                    <StackPanel Grid.RowSpan="3" Margin="15 0" Background="FloralWhite">
+
+                        <StackPanel >
+                            <!--Label of the Index List-->
+                            <StackPanel Margin="5 10"  
+                                        HorizontalAlignment="Center"
                                     Orientation="Horizontal">
-                            <TextBlock 
+                                <TextBlock 
                                 FontFamily="Cooper Black">
                             الاية
-                            </TextBlock>
-                            <Separator Width="5" 
+                                </TextBlock>
+                                <Separator Width="5" 
                                        Margin="5"
                                        Background="DarkSalmon"/>
-                            <TextBlock
+                                <TextBlock
                                        FontFamily="Cooper Black"> 
                                 ترتيب الحرف</TextBlock>
-                        </StackPanel>
-                        <ListBox x:Name="ListBox_ResultIndexs"
+                                <TextBlock Text="{Binding  Path=Results.SearchResults.Count}" Foreground="Red"/>
+                            </StackPanel>
+                            <ListBox x:Name="ListBox_ResultIndexs"
                                  Height="500" 
 
                                  Grid.RowSpan="3"
@@ -50,40 +61,45 @@
                                  SelectionChanged="ListBox_ResultIndexs_SelectionChanged" 
                                  MaxWidth="1000" 
                                  MaxHeight="1000">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock 
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock 
                                             Grid.Column="0"
                                             Text="{Binding VerseIndex}"
                                             />
-                                        <Separator Background="Aquamarine" Margin="20"/>
-                                        <TextBlock Grid.Column="1"
+                                            <TextBlock Grid.Column="1" Text="-->"/>
+                                            <TextBlock Grid.Column="2"
                                                    Text="{Binding CharIndex}"
                                                    />
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
                     </StackPanel>
-
                     <StackPanel Grid.Column="1"
-                        Grid.RowSpan="3">
-                        <!--Label of the Index List-->
-                        <StackPanel Margin="5 10">
-                            <TextBlock 
+                        Grid.RowSpan="3"
+                               Margin="15 0" Background="FloralWhite">
+
+                        <StackPanel >
+                            <!--Label of the Index List-->
+                            <StackPanel Orientation="Horizontal" Margin="5 10">
+                                <TextBlock 
                                 FontSize="14" 
                                 TextAlignment="Center"
                                 Text="الفروقات"
                                 ToolTip="هي مصفوفة كل عنصر فيها هو الفرق بين مكانين متتالين لظهور نتيجة البحث "
                                 FontFamily="Cooper Black"/>
+                                <TextBlock Text="{Binding  Path=Results.DiffrenceList.Count}" Foreground="Red"/>
 
-                        </StackPanel>
-                        <ListBox x:Name="ListBoxDiffrences"
+                            </StackPanel>
+                            <ListBox x:Name="ListBoxDiffrences"
                                                                   Height="500" 
 
                                  Grid.RowSpan="3"
@@ -97,31 +113,83 @@
 
                                  MaxWidth="1000" 
                                  MaxHeight="1000">
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock Grid.Column="1"
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <Grid>
+                                            <Grid.ColumnDefinitions>
+                                                <ColumnDefinition/>
+                                                <ColumnDefinition/>
+                                            </Grid.ColumnDefinitions>
+                                            <TextBlock Grid.Column="1"
                                                    Text="{Binding}"/>
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
+                                        </Grid>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
+                    </StackPanel>
+                    <StackPanel Grid.Column="2"
+                        Grid.RowSpan="3"
+                               Margin="15 0" Background="FloralWhite">
+
+                        <StackPanel Margin="15 0" Background="FloralWhite" >
+                            <!--Label of the Index List-->
+                            <StackPanel Margin="5 10" Orientation="Horizontal">
+                                <TextBlock 
+                                FontSize="14" 
+                                TextAlignment="Center"
+                                Text="Sequnces"
+                                ToolTip="هي مصفوفة كل عنصر فيها هو الفرق بين مكانين متتالين لظهور نتيجة البحث "
+                                FontFamily="Cooper Black"/>
+                                <TextBlock Text="{Binding  Path=Results.Sequances.Count}" Foreground="Red"/>
+
+                            </StackPanel>
+                            <ListBox x:Name="ListBoxDiffrence"
+                                Height="500" 
+                                 Grid.RowSpan="3"
+                                 Margin="5 0"
+                                 ItemsSource="{Binding 
+                                Path=Results.Sequances}" 
+                                 FontSize="18"
+                                 FontFamily="Cooper Black" 
+                                SelectionChanged="ListBoxDiffrences_SelectionChanged" 
+                                 MaxWidth="1000" 
+                                 MaxHeight="1000">
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+
+
+                                        <Border BorderBrush="Black" BorderThickness="2">
+                                            <StackPanel>
+                                                <TextBlock 
+                                                Text="{Binding Path=Key, Converter={StaticResource SerializerConverter}}"/>
+                                                <TextBlock Text="{Binding Path=Value}" />
+                                            </StackPanel>
+                                        </Border>
+
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
+                        </StackPanel>
                     </StackPanel>
 
-                    <StackPanel Grid.RowSpan="3" Grid.Column="2">
-                        <TextBlock FontSize="14"
+                    <StackPanel Margin="15 0" Background="FloralWhite" Grid.RowSpan="3" Grid.Column="3"
+                                 >
+
+                        <StackPanel>
+                            <StackPanel Orientation="Horizontal">
+                                <TextBlock FontSize="14"
                                    FontFamily="Cooper Black"
                                    Margin="5 10"
                                    ToolTip="عرض النتائج عندما تختار اي عنصر من المصفوفات السابقة"
                                    TextAlignment="Center"
                                                 >الأيات</TextBlock>
+                                <TextBlock Text="{Binding  Path=Results.SearchResults.Count}" Foreground="Red"/>
 
 
-                        <ListBox x:Name="ListBoxVersesText"
+                            </StackPanel>
+
+                            <ListBox x:Name="ListBoxVersesText"
                                  Margin="5 0"
                                  
 
@@ -134,26 +202,27 @@
                                  FontFamily="Cooper Black" 
                                  SelectionChanged="ListBoxVersesText_SelectionChanged" 
                                  >
-                            <ListBox.ItemTemplate>
-                                <DataTemplate>
-                                    <Grid>
-                                        <Grid.ColumnDefinitions>
-                                            <ColumnDefinition/>
-                                            <ColumnDefinition/>
-                                        </Grid.ColumnDefinitions>
-                                        <TextBlock
-                                            Text="{Binding VerseText}"
-                                            Margin="0 5"
-                                            />
+                                <ListBox.ItemTemplate>
+                                    <DataTemplate>
+                                        <RichTextBox IsReadOnly="True" BorderThickness="0" TextChanged="RichTextBox_TextChanged" Width="300">
+                                            <FlowDocument>
+                                                <Paragraph>
+                                                    <Run Text="{Binding VerseText}"/>
+                                                </Paragraph>
+                                            </FlowDocument>
+                                        </RichTextBox>
+                                    </DataTemplate>
+                                </ListBox.ItemTemplate>
+                            </ListBox>
 
-                                    </Grid>
-                                </DataTemplate>
-                            </ListBox.ItemTemplate>
-                        </ListBox>
-
+                        </StackPanel>
                     </StackPanel>
-                    <StackPanel Grid.Row="0" Grid.Column="3">
-                        <TextBlock  FontSize="17" TextAlignment="Center">اختر السورة</TextBlock>
+                    <StackPanel Background="FloralWhite" 
+                                Grid.Row="0" Grid.Column="4">
+                        <TextBlock  FontSize="16" 
+                                   
+                                    Margin="5 10"
+                                    TextAlignment="Center">اختر السورة</TextBlock>
                         <ComboBox Name="ComboBox_Suras"
                                   ItemsSource="{Binding Path=Suras}"
                                   DisplayMemberPath="Name"
@@ -161,15 +230,37 @@
                                   SelectedValue="{Binding Path=SelectedSura.Id,Mode=TwoWay}"
                                   Margin="10 5"/>
 
-                        <TextBlock Margin="10 15 10 2" TextAlignment="Center" FontSize="18" FontFamily="Cooper Black">نص البحث</TextBlock>
+                        <TextBlock Margin="10 15 10 2" 
+                                   Foreground="Black"
+                                   Background="AliceBlue"
+                                   Padding="5 10"
+                                   TextAlignment="Center" 
+                                   FontSize="16" 
+                                   FontFamily="Cooper Black">نص البحث</TextBlock>
 
                         <TextBox Name="txt_search" 
                                  Text="{Binding Path=SearchText,Mode=TwoWay}" 
                                  Margin="10 5" TextBlock.FontSize="18" TextBlock.FontFamily="Cooper Black" />
 
                         <Button Margin="10 10"
+                                Background="SkyBlue"
+                                Foreground="White"
+                        Padding="40 10"
                                 Content="بدء البحث" 
-                                Click="Button_Click" TextBlock.FontSize="18" TextBlock.FontFamily="Cooper Black"/>
+                                Click="Button_Click" 
+                                FontSize="16" TextBlock.FontFamily="Cooper Black"/>
+                    </StackPanel>
+                    <!--Advanced Modification-->
+                    <StackPanel Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
+                        <Button x:Name="ButtonSearchForSimilar"
+                                Content="Search for Similar" 
+                                Padding="10" 
+                                Background="SkyBlue"
+                                Foreground="White"
+                                FontSize="16"
+                                Margin="10 0"
+                                Click="ButtonSearchForSimilar_Click"
+                                />
                     </StackPanel>
                 </Grid>
             </TabItem>

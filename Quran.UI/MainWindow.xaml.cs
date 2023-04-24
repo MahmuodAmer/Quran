@@ -1,4 +1,5 @@
 ﻿using Quran.Core.Model;
+using Quran.UI.Converters;
 using Quran.UI.Data;
 using Quran.UI.ViewModels;
 using System;
@@ -30,22 +31,21 @@ namespace Quran.UI
             InitializeComponent();
             viewModel = new MainViewModel(new MainDataModel());
             this.DataContext = viewModel;
-            //viewModel.Load();
+            viewModel.Load();
         }
 
         private void Button_Click(object sender, RoutedEventArgs e)
         {
             viewModel.Load();
+
+            //Save the search value in the HighlightConverter converter
+            HighlightConverter.SearchText = viewModel.SearchText;
         }
 
         private void ListBox_ResultIndexs_SelectionChanged(object sender, SelectionChangedEventArgs e)
         {
             if (ListBox_ResultIndexs.SelectedItem == null)
                 return;
-            //viewModel.SelectedResult = (Result)ListBox_ResultIndexs.SelectedItem;
-            //ListBoxVersesText.SelectedItem = ListBox_ResultIndexs.SelectedItem;
-            //ListBoxVersesText.ScrollIntoView(ListBox_ResultIndexs.SelectedItem);
-
 
             var selectedItem = ((ListBox)sender).SelectedItem;
             //////
@@ -63,7 +63,6 @@ namespace Quran.UI
         {
             ListBox_ResultIndexs.SelectedItem = ListBoxVersesText.SelectedItem;
             ListBox_ResultIndexs.ScrollIntoView(ListBoxVersesText.SelectedItem);
-
         }
 
         private void ListBoxDiffrences_SelectionChanged(object sender, SelectionChangedEventArgs e)
@@ -76,23 +75,29 @@ namespace Quran.UI
             ListBoxVersesText.SelectedItems.Clear();
 
             //Get the items to select 
-            //if (2 * selectedIndex + 1 >= viewModel.Results.SearchResults.Count)
-            //{
-            //    var firstItem = viewModel.Results.SearchResults[viewModel.Results.SearchResults.Count - 2];
-            //    var secondItem = viewModel.Results.SearchResults[viewModel.Results.SearchResults.Count - 1];
-            //    ListBoxVersesText.SelectedItems.Add(firstItem);
-            //    ListBoxVersesText.SelectedItems.Add(secondItem);
-            //}
-            //else
-            //{
+
             var firstItem = viewModel.Results.SearchResults[selectedIndex];
             var secondItem = viewModel.Results.SearchResults[selectedIndex + 1];
             ListBoxVersesText.SelectedItems.Add(firstItem);
             ListBoxVersesText.SelectedItems.Add(secondItem);
-            //}
+        }
 
-            //Select the elements
+        private void RichTextBox_TextChanged(object sender, TextChangedEventArgs e)
+        {
+            var richTextBox = (RichTextBox)sender;
+            var text = new TextRange(richTextBox.Document.ContentStart, richTextBox.Document.ContentEnd).Text;
+            var index = text.IndexOf(viewModel.SearchText, StringComparison.OrdinalIgnoreCase);
+            if (index >= 0)
+            {
+                var start = richTextBox.Document.ContentStart.GetPositionAtOffset(index);
+                var end = richTextBox.Document.ContentStart.GetPositionAtOffset(index + viewModel.SearchText.Length);
+                var textRange = new TextRange(start, end);
+                textRange.ApplyPropertyValue(TextElement.ForegroundProperty, Brushes.Red);
+            }
+        }
 
+        private void ButtonSearchForSimilar_Click(object sender, RoutedEventArgs e)
+        {
 
         }
     }

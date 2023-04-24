@@ -8,5 +8,6 @@ namespace Quran.Core.Model
         public string SearchChars { get; set; }
         public ObservableCollection<Result> SearchResults { get; set; }
         public ObservableCollection<int> DiffrenceList { get; set; }
+        public Dictionary<string, int> Sequances { get; set; }
     }
 }
