@@ -13,6 +13,10 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="C:\Users\mahmu\source\repos\MathSolver.UI\Math4Lib\Math4Lib.csproj" />
+  </ItemGroup>
+
+  <ItemGroup>
     <None Update="raw\suras.txt">
       <CopyToOutputDirectory>Always</CopyToOutputDirectory>
     </None>

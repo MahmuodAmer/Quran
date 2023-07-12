@@ -59,6 +59,7 @@ namespace Quran.Core
                     else
                         break;
                 }
+                var stringSura = sura.verses.Select(x => x.Text);
                 Suras.Add(sura);
             }
         }

@@ -4,10 +4,12 @@
         xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
         xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
         xmlns:local="clr-namespace:Quran.UI"
+        xmlns:oxy="http://oxyplot.org/wpf"
         xmlns:converter="clr-namespace:Quran.UI.Converters"
         mc:Ignorable="d"
         Foreground="White"
         Title="Quran"
+        WindowState="Maximized"
         >
     <Window.Resources>
         <converter:SerializerConverter x:Key="SerializerConverter"></converter:SerializerConverter>
@@ -16,6 +18,7 @@
     <Grid>
         <TabControl>
             <TabItem Header="Tab Item 0" Width="500">
+
                 <Grid>
                     <Grid.RowDefinitions>
                         <RowDefinition Height="2*"/>
@@ -23,12 +26,20 @@
                         <RowDefinition Height="1*"/>
                     </Grid.RowDefinitions>
                     <Grid.ColumnDefinitions>
-                        <ColumnDefinition Width=".5*"/>
+                        <ColumnDefinition Width=".8*"/>
                         <ColumnDefinition Width=".5*"/>
                         <ColumnDefinition Width="1.5*"/>
                         <ColumnDefinition Width="2*"/>
                         <ColumnDefinition/>
                     </Grid.ColumnDefinitions>
+
+
+
+
+
+
+
+
                     <!--رقم الاية ورقم الحرف-->
                     <!--Column0 row 0-->
                     <StackPanel Grid.RowSpan="3" Margin="15 0" Background="FloralWhite">
@@ -130,7 +141,8 @@
                     </StackPanel>
                     <StackPanel Grid.Column="2"
                         Grid.RowSpan="3"
-                               Margin="15 0" Background="FloralWhite">
+                               Margin="15 0" 
+                                Background="FloralWhite">
 
                         <StackPanel Margin="15 0" Background="FloralWhite" >
                             <!--Label of the Index List-->
@@ -245,24 +257,109 @@
                         <Button Margin="10 10"
                                 Background="SkyBlue"
                                 Foreground="White"
-                        Padding="40 10"
+                                Padding="40 10"
                                 Content="بدء البحث" 
                                 Click="Button_Click" 
                                 FontSize="16" TextBlock.FontFamily="Cooper Black"/>
                     </StackPanel>
-                    <!--Advanced Modification-->
-                    <StackPanel Grid.Column="4" Grid.Row="1" Grid.RowSpan="2">
+                    <!--Advanced Modification Hidden For Now -->
+                    <StackPanel Grid.Column="4" Grid.Row="1" Visibility="Hidden" Grid.RowSpan="2">
                         <Button x:Name="ButtonSearchForSimilar"
                                 Content="Search for Similar" 
                                 Padding="10" 
                                 Background="SkyBlue"
                                 Foreground="White"
                                 FontSize="16"
-                                Margin="10 0"
                                 Click="ButtonSearchForSimilar_Click"
                                 />
                     </StackPanel>
+
+
                 </Grid>
+            </TabItem>
+         
+            <TabItem Header="Comparison Between 2 Items">
+                <Grid>
+                    <Grid.RowDefinitions>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                        <RowDefinition/>
+                    </Grid.RowDefinitions>
+                    <Grid.ColumnDefinitions>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                        <ColumnDefinition/>
+                    
+                    </Grid.ColumnDefinitions>
+                    <oxy:PlotView x:Name="PlotView2"
+                                  Grid.Column="0"
+                                  Grid.Row="0"
+                                  Model="{Binding GraphModel}"/>
+                    <StackPanel Background="FloralWhite" 
+                                Grid.Row="0" 
+                            Grid.Column="2">
+                    <TextBlock  FontSize="16" 
+                                   
+                                    Margin="5 10"
+                                    TextAlignment="Center">اختر السورة</TextBlock>
+                    <ComboBox Name="ComboBox_Suras1"
+                                  ItemsSource="{Binding Path=Suras}"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
+                                  SelectedValue="{Binding Path=SelectedSura.Id,Mode=TwoWay}"
+                                  Margin="10 5"/>
+
+                    <TextBlock Margin="10 15 10 2" 
+                                   Foreground="Black"
+                                   Background="AliceBlue"
+                                   Padding="5 10"
+                                   TextAlignment="Center" 
+                                   FontSize="16" 
+                                   FontFamily="Cooper Black">نص البحث</TextBlock>
+
+                    <TextBox Name="txt_search1" 
+                                 Text="{Binding Path=SearchText,Mode=TwoWay}" 
+                                 Margin="10 5" TextBlock.FontSize="18" TextBlock.FontFamily="Cooper Black" />
+
+                    <Button Margin="10 10"
+                            x:Name="Button_DrawResults"
+                                Background="SkyBlue"
+                                Foreground="White"
+                        Padding="40 10"
+                                Content="Draw Results"
+                                Click="Button_DrawResults_Click"
+                                FontSize="16" TextBlock.FontFamily="Cooper Black"/>
+                </StackPanel>
+                    
+                <StackPanel Background="FloralWhite" 
+                                Grid.Row="0" 
+                            Grid.Column="1">
+                        <TextBlock  FontSize="16" 
+                                   
+                                    Margin="5 10"
+                                    TextAlignment="Center">اختر السورة</TextBlock>
+                        <ComboBox Name="ComboBox_Suras2"
+                                  ItemsSource="{Binding Path=Suras}"
+                                  DisplayMemberPath="Name"
+                                  SelectedValuePath="Id"
+                                  SelectedValue="{Binding Path=SelectedSura.Id,Mode=TwoWay}"
+                                  Margin="10 5"/>
+
+                        <TextBlock Margin="10 15 10 2" 
+                                   Foreground="Black"
+                                   Background="AliceBlue"
+                                   Padding="5 10"
+                                   TextAlignment="Center" 
+                                   FontSize="16" 
+                                   FontFamily="Cooper Black">نص البحث</TextBlock>
+
+                        <TextBox Name="txt_search2" 
+                                 Text="{Binding Path=SearchText,Mode=TwoWay}" 
+                                 Margin="10 5" TextBlock.FontSize="18" TextBlock.FontFamily="Cooper Black" />
+                    </StackPanel>
+                </Grid>
+
             </TabItem>
         </TabControl>
 

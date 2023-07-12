@@ -1,10 +1,12 @@
-﻿using Quran.Core.Model;
+﻿using Newtonsoft.Json;
+using Quran.Core.Model;
 using Quran.UI.Converters;
 using Quran.UI.Data;
 using Quran.UI.ViewModels;
 using System;
 using System.Collections.Generic;
 using System.ComponentModel;
+using System.IO;
 using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
@@ -31,6 +33,7 @@ namespace Quran.UI
             InitializeComponent();
             viewModel = new MainViewModel(new MainDataModel());
             this.DataContext = viewModel;
+            
             viewModel.Load();
         }
 
@@ -98,6 +101,16 @@ namespace Quran.UI
 
         private void ButtonSearchForSimilar_Click(object sender, RoutedEventArgs e)
         {
+
+            var results=viewModel.SearchForSimilar();
+            var stringRepresentation=JsonConvert.SerializeObject(results);
+            File.WriteAllText("SerializedFile.txt", stringRepresentation);
+        }
+
+        private void Button_DrawResults_Click(object sender, RoutedEventArgs e)
+        {
+            //var result1  = 
+            viewModel.Load();
 
         }
     }

@@ -1,10 +1,10 @@
 ﻿using Newtonsoft.Json;
 using Quran.Core.Extention;
 using Quran.Core.Model;
-using System.Collections.Immutable;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
-using System.Text;
+using Math4Lib;
+using System.Numerics;
 
 namespace Quran.Core
 {
@@ -14,7 +14,7 @@ namespace Quran.Core
         {
             List<Result> searchResults = new List<Result>();
 
-            //if charsDetection == "" did not complete the process
+
             if (charsDetection == "")
                 return new SeriesIdxResults();
 
@@ -30,23 +30,26 @@ namespace Quran.Core
 
                 string partOfText = verse.Substring(idx, lengthOfChars);
                 bool checkValue = (partOfText == charsDetection);
-                if (verse[idx] != '\n' | verse[idx] != ' ')
-                    charIndex++;
 
                 if (checkValue)
                 {
                     Match m = Regex.Match(verse.Substring(idx), @"\d+");
                     if (m.Success)
                     {
-                        searchResults.Add(new Result
+                        var newResult = new Result
                         {
                             CharIndex = charIndex,
                             SpacesIndex = idx + 1,
                             VerseIndex = int.Parse(m.Value),
                             VerseText = GetVarseThatIndexWillBeIn(verse, idx)
-                        });
+                        };
+                        searchResults.Add(newResult);
                     }
                 }
+                var currentChar = verse[idx];
+                bool isNumber = Regex.IsMatch(verse[idx].ToString(), "\\d");
+                if (verse[idx] != '\n' & verse[idx] != ' ' & !isNumber & currentChar != 'ـ')
+                    charIndex++;
             }
             var diffList = searchResults.Select(r => r.CharIndex).ToList().GetDifference();
             var output = new SeriesIdxResults
@@ -58,7 +61,17 @@ namespace Quran.Core
                 Sequances = GetSequances(diffList)
             };
 
-
+            //Modification - Add the equation
+            //Create X -axes
+            var x=new List<double>(output.DiffrenceList.Count);
+            for (int i = 0; i < output.DiffrenceList.Count; i++)
+            {
+                x.Add(i);
+            }
+            output.PolynomialRepresentation = 
+                                            FittingCurves.GeneratePolynomial(x,
+                                            output.DiffrenceList.Select(num=> (double)num).ToList(),
+                                            output.DiffrenceList.Count-1);
             return output;
         }
 
@@ -114,10 +127,32 @@ namespace Quran.Core
             return shows;
         }
 
-        public static List<SeriesIdxResults> SearchForSimilar(string verse, string searchText, int id)
+        public static SearchForSimilarOutput SearchForSimilar(string verse, string searchText, int id)
         {
-            var searchList=DetectSubStrings(verse);
-            throw new NotImplementedException();
+            var searchList = DetectSubStrings(verse);
+            var output = new SearchForSimilarOutput();
+            if (searchText.Length == 0)
+            {
+                return output;
+            }
+
+            //Get the refrence object 
+            var refrence = DetectIndices(verse, searchText, id);
+            output.Refrence = refrence;
+
+            //for each string the the stringList
+            //--search for it 
+            //--find similarity percentage
+            foreach (var item in searchList)
+            {
+                var result = DetectIndices(verse, item, id);
+                var error = DetectedError(refrence, result);
+
+                output.Results.Add(new SearchForSimilarResult { Result = result, Error = error });
+
+            }
+            output.Results.Sort(new SearchSimilarResultComparator());
+            return output;
         }
         /// <summary>
         /// Detect all posible characheters to search for using
@@ -129,19 +164,37 @@ namespace Quran.Core
             HashSet<string> result = new HashSet<string>();
             for (int i = 1; i < 20; i++)
             {
-                for (int index = 0; index < verse.Length; index += i)
+                for (int index = 0; index < verse.Length - i; index += i)
                 {
-                    //If there is no space in the substring
-                    if (verse.Substring(index, i).IndexOf(" ") == -1)
+                    string pattern = @"[\|\s\n\dـ]";
+                    string subString = verse.Substring(index, i);
+
+                    if (Regex.IsMatch(subString, pattern) == false)
                     {
                         result.Add(verse.Substring(index, i));
                     }
+                    
                 }
             }
 
             return result.ToList();
         }
 
-        
+        private static BigInteger DetectedError(SeriesIdxResults refrence, SeriesIdxResults newObj)
+        {
+            BigInteger error = 0;
+            var evaluationList=refrence.DiffrenceList;
+            var refEquation = refrence.PolynomialRepresentation;
+            var selectedEquation = newObj.PolynomialRepresentation;
+
+            foreach (var item in evaluationList)
+            {
+               error += Math.Abs((refEquation.Evalute(item) - selectedEquation.Evalute(item)));
+               //TODO: Implement the DetectedError Function
+            }
+            return error;
+
+        }
+
     }
 }

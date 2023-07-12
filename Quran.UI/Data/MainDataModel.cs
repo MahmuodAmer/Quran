@@ -12,15 +12,13 @@ namespace Quran.UI.Data
             return Parser.DetectIndices(id.SuraIdToString(), searchText, id);
         }
 
-        public List<SeriesIdxResults> SearchForSimilar(int id, string searchText)
-        {
-            return  Parser.SearchForSimilar(id.SuraIdToString(), searchText, id);
 
-        }
 
-        void IMainDataModel.SearchForSimilar(int id, string searchText)
+
+
+        public SearchForSimilarOutput SearchForSimilar(int id, string searchText)
         {
-            throw new System.NotImplementedException();
+            return Parser.SearchForSimilar(id.SuraIdToString(), searchText, id);
         }
     }
 }
