@@ -3,11 +3,6 @@ using Quran.Core;
 using Quran.Core.Extention;
 using Quran.UI.Data;
 using Quran.UI.ViewModels;
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace Quran.UI.Startup
 {

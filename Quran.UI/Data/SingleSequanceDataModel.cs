@@ -17,6 +17,5 @@ namespace Quran.UI.Data
             var suraText = generalConverter.SuraIdToString(id);
             return Parser.DetectIndices(suraText, searchText, id);
         }
-
     }
 }

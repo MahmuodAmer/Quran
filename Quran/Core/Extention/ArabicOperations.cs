@@ -5,8 +5,6 @@ namespace Quran.Core.Extention
 {
     public class ArabicOperations : IArabicOperations
     {
-        #region Text Utilites
-
         private readonly string[] DIACRITICS = Enumerable.Range(0x0600, 0x06ff - 0x0600 + 1)
                 .Where(x => CharUnicodeInfo.GetUnicodeCategory((char)x) == UnicodeCategory.NonSpacingMark)
                 .Select(x => ((char)x).ToString())
@@ -23,8 +21,6 @@ namespace Quran.Core.Extention
             return text;
         }
 
-
-
         public string SimplifyVerse(string text)
         {
             if (text.Length == 0)
@@ -36,8 +32,5 @@ namespace Quran.Core.Extention
             else
                 return text;
         }
-
-        #endregion
-
     }
 }

@@ -8,8 +8,6 @@
         {
             this.loader = loader;
         }
-
-
         /// <summary>
         /// Give it the Sura Id and it will return the text of the sura
         /// </summary>
