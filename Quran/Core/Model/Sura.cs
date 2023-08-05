@@ -1,4 +1,7 @@
-﻿namespace Quran.Core.Model
+﻿using System.Collections.Generic;
+using System.Linq;
+
+namespace Quran.Core.Model
 {
     public class Sura
     {

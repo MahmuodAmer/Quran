@@ -3,8 +3,11 @@ using Quran.Core.Extention;
 using Quran.Core.Model;
 using System.Text.RegularExpressions;
 using System.Collections.ObjectModel;
-using Math4Lib;
 using System.Numerics;
+
+using System.Collections.Generic;
+using System.Linq;
+using System;
 
 namespace Quran.Core
 {
@@ -52,28 +55,98 @@ namespace Quran.Core
                     charIndex++;
             }
             var diffList = searchResults.Select(r => r.CharIndex).ToList().GetDifference();
+            var seqList = GetSequances(diffList);
+
+            foreach (var seq in seqList)
+            {
+                seqList[seq.Key] = seq.Value + 1;
+            }
             var output = new SeriesIdxResults
             {
                 DiffrenceList = new ObservableCollection<int>(diffList),
                 SearchChars = charsDetection,
                 SuraId = suraId,
                 SearchResults = new ObservableCollection<Result>(searchResults),
-                Sequances = GetSequances(diffList)
+                Sequances = seqList
             };
 
             //Modification - Add the equation
             //Create X -axes
-            var x=new List<double>(output.DiffrenceList.Count);
+            var x = new List<double>(output.DiffrenceList.Count);
             for (int i = 0; i < output.DiffrenceList.Count; i++)
             {
                 x.Add(i);
             }
-            output.PolynomialRepresentation = 
-                                            FittingCurves.GeneratePolynomial(x,
-                                            output.DiffrenceList.Select(num=> (double)num).ToList(),
-                                            output.DiffrenceList.Count-1);
+
             return output;
         }
+
+
+        public static SeriesIdxResults DetectIndices(string verse, string charsDetection)
+        {
+            List<Result> searchResults = new List<Result>();
+
+
+            if (charsDetection == "")
+                return new SeriesIdxResults();
+
+            verse = verse.Replace("|", "");
+
+            //indexer that count the indecies without spaces and new line
+            int charIndex = 1;
+
+            // get the list of index of ayat
+            for (int idx = 0; idx < verse.Length - charsDetection.Length; idx++)
+            {
+                int lengthOfChars = charsDetection.Length;
+
+                string partOfText = verse.Substring(idx, lengthOfChars);
+                bool checkValue = (partOfText == charsDetection);
+
+                if (checkValue)
+                {
+
+                    var newResult = new Result
+                    {
+                        CharIndex = charIndex,
+                        SpacesIndex = idx + 1,
+                        VerseText = GetVarseThatIndexWillBeIn(verse, idx)
+                    };
+                    searchResults.Add(newResult);
+
+                }
+                var currentChar = verse[idx];
+                bool isNumber = Regex.IsMatch(verse[idx].ToString(), "\\d");
+                if (verse[idx] != '\n' & verse[idx] != ' ' & !isNumber & currentChar != 'ـ')
+                    charIndex++;
+            }
+            var diffList = searchResults.Select(r => r.CharIndex).ToList().GetDifference();
+
+            var seqList = GetSequances(diffList);
+
+            foreach (var seq in seqList)
+            {
+                seqList[seq.Key] = seq.Value + 1;
+            }
+            var output = new SeriesIdxResults
+            {
+                DiffrenceList = new ObservableCollection<int>(diffList),
+                SearchChars = charsDetection,
+                SearchResults = new ObservableCollection<Result>(searchResults),
+                Sequances = seqList
+            };
+
+            //Modification - Add the equation
+            //Create X -axes
+            var x = new List<double>(output.DiffrenceList.Count);
+            for (int i = 0; i < output.DiffrenceList.Count; i++)
+            {
+                x.Add(i);
+            }
+            return output;
+        }
+
+
 
         private static string GetVarseThatIndexWillBeIn(string verse, int idx)
         {
@@ -127,33 +200,33 @@ namespace Quran.Core
             return shows;
         }
 
-        public static SearchForSimilarOutput SearchForSimilar(string verse, string searchText, int id)
-        {
-            var searchList = DetectSubStrings(verse);
-            var output = new SearchForSimilarOutput();
-            if (searchText.Length == 0)
-            {
-                return output;
-            }
+        //public static SearchForSimilarOutput SearchForSimilar(string verse, string searchText, int id)
+        //{
+        //    var searchList = DetectSubStrings(verse);
+        //    var output = new SearchForSimilarOutput();
+        //    if (searchText.Length == 0)
+        //    {
+        //        return output;
+        //    }
 
-            //Get the refrence object 
-            var refrence = DetectIndices(verse, searchText, id);
-            output.Refrence = refrence;
+        //    //Get the refrence object 
+        //    var refrence = DetectIndices(verse, searchText, id);
+        //    output.Refrence = refrence;
 
-            //for each string the the stringList
-            //--search for it 
-            //--find similarity percentage
-            foreach (var item in searchList)
-            {
-                var result = DetectIndices(verse, item, id);
-                var error = DetectedError(refrence, result);
+        //    //for each string the the stringList
+        //    //--search for it 
+        //    //--find similarity percentage
+        //    foreach (var item in searchList)
+        //    {
+        //        var result = DetectIndices(verse, item, id);
+        //        var error = DetectedError(refrence, result);
 
-                output.Results.Add(new SearchForSimilarResult { Result = result, Error = error });
+        //        output.Results.Add(new SearchForSimilarResult { Result = result, Error = error });
 
-            }
-            output.Results.Sort(new SearchSimilarResultComparator());
-            return output;
-        }
+        //    }
+        //    output.Results.Sort(new SearchSimilarResultComparator());
+        //    return output;
+        //}
         /// <summary>
         /// Detect all posible characheters to search for using
         /// </summary>
@@ -173,28 +246,27 @@ namespace Quran.Core
                     {
                         result.Add(verse.Substring(index, i));
                     }
-                    
+
                 }
             }
 
             return result.ToList();
         }
 
-        private static BigInteger DetectedError(SeriesIdxResults refrence, SeriesIdxResults newObj)
-        {
-            BigInteger error = 0;
-            var evaluationList=refrence.DiffrenceList;
-            var refEquation = refrence.PolynomialRepresentation;
-            var selectedEquation = newObj.PolynomialRepresentation;
+        //private static BigInteger DetectedError(SeriesIdxResults refrence, SeriesIdxResults newObj)
+        //{
+        //    BigInteger error = 0;
+        //    var evaluationList = refrence.DiffrenceList;
+        //    var refEquation = refrence.PolynomialRepresentation;
+        //    var selectedEquation = newObj.PolynomialRepresentation;
 
-            foreach (var item in evaluationList)
-            {
-               error += Math.Abs((refEquation.Evalute(item) - selectedEquation.Evalute(item)));
-               //TODO: Implement the DetectedError Function
-            }
-            return error;
+        //    foreach (var item in evaluationList)
+        //    {
+        //        error += Math.Abs((refEquation.Evalute(item) - selectedEquation.Evalute(item)));
+        //        //TODO: Implement the DetectedError Function
+        //    }
+        //    return error;
 
-        }
-
+        //}
     }
 }

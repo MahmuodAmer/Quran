@@ -15,19 +15,6 @@ namespace Quran.UI.Converters
         {
             if (value is string text)
             {
-                //var highlightedText = new StringBuilder();
-                //foreach (var c in text)
-                //{
-                //    if (c == 'T' || c == 't')
-                //    {
-                //        highlightedText.Append($"<Span Background=\"Yellow\">{c}</Span>");
-                //    }
-                //    else
-                //    {
-                //        highlightedText.Append(c);
-                //    }
-                //}
-                //return highlightedText.ToString();
                 value = text.Replace(SearchText, $"<TextBlock Background=\"Yellow\">{SearchText}</TextBlock>");
             }
             return value;
@@ -35,7 +22,7 @@ namespace Quran.UI.Converters
 
         public object ConvertBack(object value, Type targetType, object parameter, CultureInfo culture)
         {
-            return new object();
+            return null;
         }
     }
 }

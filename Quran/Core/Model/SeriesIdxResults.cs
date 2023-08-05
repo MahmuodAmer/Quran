@@ -1,4 +1,4 @@
-﻿using Math4Lib;
+﻿using System.Collections.Generic;
 using System.Collections.ObjectModel;
 
 namespace Quran.Core.Model

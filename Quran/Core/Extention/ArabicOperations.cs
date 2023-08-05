@@ -1,17 +1,18 @@
 ﻿using System.Globalization;
+using System.Linq;
 
 namespace Quran.Core.Extention
 {
-    public static class ArabicOperations
+    public class ArabicOperations : IArabicOperations
     {
         #region Text Utilites
 
-        private static readonly string[] DIACRITICS = Enumerable.Range(0x0600, 0x06ff - 0x0600 + 1)
+        private readonly string[] DIACRITICS = Enumerable.Range(0x0600, 0x06ff - 0x0600 + 1)
                 .Where(x => CharUnicodeInfo.GetUnicodeCategory((char)x) == UnicodeCategory.NonSpacingMark)
                 .Select(x => ((char)x).ToString())
                 .ToArray();
 
-        public static string StripDiacritics(this string text)
+        public string StripDiacritics(string text)
         {
             if (string.IsNullOrEmpty(text))
                 return text;
@@ -24,7 +25,7 @@ namespace Quran.Core.Extention
 
 
 
-        public static string SimplifyVerse(this string text)
+        public string SimplifyVerse(string text)
         {
             if (text.Length == 0)
                 return text;

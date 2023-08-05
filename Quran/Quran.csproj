@@ -1,20 +1,19 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <OutputType>WinExe</OutputType>
     <TargetFramework>net6.0-windows</TargetFramework>
-    <Nullable>disable</Nullable>
-    <UseWindowsForms>true</UseWindowsForms>
-    <ImplicitUsings>enable</ImplicitUsings>
   </PropertyGroup>
 
   <ItemGroup>
+    <PackageReference Include="DeepCloner" Version="0.10.4" />
     <PackageReference Include="Newtonsoft.Json.Bson" Version="1.0.2" />
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="C:\Users\mahmu\source\repos\MathSolver.UI\Math4Lib\Math4Lib.csproj" />
+    <!--<ProjectReference Include="C:\Users\mahmu\source\repos\MathSolver.UI\Math4Lib\Math4Lib.csproj" />-->
   </ItemGroup>
+
+
 
   <ItemGroup>
     <None Update="raw\suras.txt">

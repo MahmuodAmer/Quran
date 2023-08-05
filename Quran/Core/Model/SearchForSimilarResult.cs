@@ -7,5 +7,4 @@ namespace Quran.Core.Model
         public SeriesIdxResults Result { get; set; }
         public BigInteger Error { get; set; }
     }
-
 }

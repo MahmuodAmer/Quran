@@ -1,5 +1,10 @@
-﻿using System.Text;
+﻿using System;
+using System.Collections.Generic;
+using System.IO;
+using System.Linq;
+using System.Text;
 using System.Text.RegularExpressions;
+using Force.DeepCloner;
 using Quran.Core.Extention;
 using Quran.Core.Model;
 
@@ -8,19 +13,14 @@ namespace Quran.Core
     /// <summary>
     /// Load all the Quran text into it
     /// </summary>
-    public class QuranLoader
+    public class QuranLoader:ISuraNamesLoader
     {
-        private static QuranLoader _instance=null;
+        
+        private readonly IArabicOperations arabicOperations = new ArabicOperations();
+
         public List<Sura> Suras { get; set; }=new List<Sura>();
-        public static QuranLoader GetInstance()
-        {
-            if(_instance == null )
-                _instance= new QuranLoader();
 
-            return _instance;
-        }
-
-        private QuranLoader()
+        public QuranLoader()
         {
             var lines=File.ReadAllText(@".\raw\quran-simple.txt", Encoding.UTF8).Split("\n");
             Load(lines);
@@ -49,7 +49,7 @@ namespace Quran.Core
                         if (i == idSura && lineId<lines.Count())
                         {
                             //Remove Harakat
-                            versaText = versaText.StripDiacritics();
+                            versaText = arabicOperations.StripDiacritics(versaText);
                             sura.verses.Add(new Verse() { Text = versaText, Id = idVersa });
                             lineId++;
                         }
@@ -59,9 +59,34 @@ namespace Quran.Core
                     else
                         break;
                 }
-                var stringSura = sura.verses.Select(x => x.Text);
+                
                 Suras.Add(sura);
             }
+        }
+
+        private List<LightItem> SurasNames = null;
+        /// <summary>
+        /// Get the names of the Quran Suras
+        /// </summary>
+        /// <returns></returns>
+        public List<LightItem> GetNames()
+        {
+            if (SurasNames == null)
+            {
+
+                SurasNames = new List<LightItem>();
+                //Load the names from the file suras.txt file
+                foreach (var line in File.ReadAllLines("raw\\suras.txt"))
+                {
+                    int id = int.Parse(line.Split(",")[0]);
+                    string name = line.Split(",")[1].Replace("\"", "");
+                    SurasNames.Add(new LightItem() { Id = id, Name = name });
+                }
+                return SurasNames;
+            }
+            else
+                return SurasNames.DeepClone();
+
         }
     }
 }

@@ -1,4 +1,5 @@
 ﻿using Quran.Core.Model;
+using System.Collections.Generic;
 
 namespace Quran.Core
 {
